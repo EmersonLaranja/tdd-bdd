@@ -18,7 +18,7 @@ interface SutTypes {
 const makeAddTask = (): AddTask => {
   class AddTaskStub implements AddTask {
     async add(task: AddTaskModel): Promise<Task> {
-      return new Promise((resolve) => resolve(makeFakeTask()));
+      return Promise.resolve(makeFakeTask());
     }
   }
   return new AddTaskStub();
@@ -68,9 +68,7 @@ describe("AddTask Controller", () => {
 
   test("Should return 500 if AddTask throws", async () => {
     const { sut, addTaskStub } = makeSut();
-    jest.spyOn(addTaskStub, "add").mockImplementationOnce(async () => {
-      return new Promise((_, reject) => reject(new Error()));
-    });
+    jest.spyOn(addTaskStub, "add").mockRejectedValueOnce(new Error());
 
     const httpResponse = await sut.handle(makeFakeRequest());
     expect(httpResponse).toEqual(serverError(new ServerError()));
