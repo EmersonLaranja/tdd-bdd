@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { Task } from "../../../entities/task";
 import {
-  AddATaskModel,
+  AddTaskModel,
   DeleteTaskModel,
   AddTaskRepository,
   DeleteTaskRepository,
@@ -15,7 +15,7 @@ import {
 export class TaskMongoRepository
   implements AddTaskRepository, DeleteTaskRepository
 {
-  async add(taskData: AddATaskModel): Promise<Task> {
+  async add(taskData: AddTaskModel): Promise<Task> {
     const taskCollection = MongoManager.getInstance().getCollection("tasks");
     const { insertedId } = await taskCollection.insertOne(taskData);
     const taskById = await taskCollection.findOne({ _id: insertedId });

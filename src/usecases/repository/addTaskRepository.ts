@@ -1,6 +1,6 @@
 import { Task } from "../../entities/task";
-import { AddATaskModel } from "../addTask";
+import { AddTaskModel } from "../addTask";
 
 export interface AddTaskRepository {
-  add(taskData: AddATaskModel): Promise<Task>;
+  add(taskData: AddTaskModel): Promise<Task>;
 }
