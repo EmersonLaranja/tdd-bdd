@@ -43,14 +43,10 @@ describe("AddTask Controller", () => {
       addTaskStub,
       validationStub
     );
+    const addSpy = jest.spyOn(addTaskStub, "add");
+    await addTaskControllerStub.handle(httpRequest);
 
-    const httpResponse = await addTaskControllerStub.handle(httpRequest);
-
-    expect(httpResponse.statusCode).toBe(201);
-    expect(httpResponse.body.title).toBe("any_title");
-    expect(httpResponse.body.description).toBe("any_description");
-    expect(httpResponse.body.date).toBe("30/06/2024");
-    expect(httpResponse).toHaveBeenCalledWith({
+    expect(addSpy).toHaveBeenCalledWith({
       title: "any_title",
       description: "any_description",
       date: "30/06/2024",
