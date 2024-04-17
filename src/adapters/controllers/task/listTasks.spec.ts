@@ -1,8 +1,10 @@
 import { Task } from "../../../entities/task";
 import { ListTasks } from "../../../usecases/listTasks";
+import { ServerError } from "../../presentations/api/errors";
 import {
   noContent,
   ok,
+  serverError,
 } from "../../presentations/api/httpResponses/httpResponses";
 import { ListTasksController } from "./listTasks";
 
@@ -60,5 +62,19 @@ describe("ListTasks Controller", () => {
     const { sut } = makeSut();
     const httpResponse = await sut.handle({});
     expect(httpResponse).toEqual(ok(makeFakeTasks()));
+  });
+
+  test("Should call ListTasks", async () => {
+    const { sut, listTasksStub } = makeSut();
+    const listSpy = jest.spyOn(listTasksStub, "list");
+    await sut.handle({});
+    expect(listSpy).toHaveBeenCalled();
+  });
+  test("Should return 500 if ListTasks throws", async () => {
+    const { sut, listTasksStub } = makeSut();
+    jest.spyOn(listTasksStub, "list").mockRejectedValueOnce(new Error());
+
+    const httpResponse = await sut.handle({});
+    expect(httpResponse).toEqual(serverError(new ServerError()));
   });
 });
