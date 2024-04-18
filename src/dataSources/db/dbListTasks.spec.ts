@@ -19,20 +19,46 @@ const makeFakeTasks = (): Task[] => {
   ];
 };
 
-describe("DbListTasks", () => {
-  /*    queremos testar a integração entre os componentes
-a integração do meu repositório que lista uma tarefa com quem o utiliza, que é o mongo
-*/
-  test("Should call ListTasksRepository", async () => {
-    class ListTasksRepositoryStub implements ListTasksRepository {
-      list(): Promise<Task[]> {
-        return Promise.resolve(makeFakeTasks());
-      }
+const makeListTasksRepository = (): ListTasksRepository => {
+  class ListTasksRepositoryStub implements ListTasksRepository {
+    list(): Promise<Task[]> {
+      return Promise.resolve(makeFakeTasks());
     }
-    const listTasksRepositoryStub = new ListTasksRepositoryStub();
+  }
+  return new ListTasksRepositoryStub();
+};
+
+interface SutTypes {
+  sut: DbListTasks;
+  listTasksRepositoryStub: ListTasksRepository;
+}
+const makeSut = (): SutTypes => {
+  const listTasksRepositoryStub = makeListTasksRepository();
+  const sut = new DbListTasks(listTasksRepositoryStub);
+  return {
+    sut,
+    listTasksRepositoryStub,
+  };
+};
+
+describe("DbListTasks", () => {
+  test("Should call ListTasksRepository", async () => {
+    const { sut, listTasksRepositoryStub } = makeSut();
     const listSpy = jest.spyOn(listTasksRepositoryStub, "list");
-    const sut = new DbListTasks(listTasksRepositoryStub);
     await sut.list();
     expect(listSpy).toHaveBeenCalled();
+  });
+  test("Should return tasks on success", async () => {
+    const { sut } = makeSut();
+    const tasks = await sut.list();
+    expect(tasks).toEqual(makeFakeTasks());
+  });
+  test("Should throw if ListTasksRepository throws", async () => {
+    const { sut, listTasksRepositoryStub } = makeSut();
+    jest
+      .spyOn(listTasksRepositoryStub, "list")
+      .mockReturnValueOnce(Promise.reject(new Error()));
+    const promise = sut.list();
+    await expect(promise).rejects.toThrow();
   });
 });
