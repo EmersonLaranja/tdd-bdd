@@ -16,6 +16,11 @@ export class MongoManager {
       this.client = await MongoClient.connect(url);
     }
   }
+
+  async disconnect(): Promise<void> {
+    if (this.client) await this.client.close();
+    this.client = null;
+  }
   public getCollection(name: string): Collection {
     if (!this.client) throw new Error("MongoClient is not connected");
     return this.client?.db().collection(name);
