@@ -32,4 +32,16 @@ describe("Task MongoDB Repository", () => {
     expect(task.description).toBe("any_description");
     expect(task.date).toBe("any_date");
   });
+  test("Should list tasks on success", async () => {
+    const sut = makeSut();
+    await sut.add({
+      title: "any_title",
+      description: "any_description",
+      date: "any_date",
+    });
+    const tasks = await sut.list();
+    expect(tasks).toBeTruthy();
+    expect(tasks.length).toBe(1); //quantidade correta
+    expect(tasks[0].title).toBe("any_title"); //dado correto
+  });
 });
