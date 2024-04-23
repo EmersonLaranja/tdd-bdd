@@ -44,4 +44,12 @@ describe("Task MongoDB Repository", () => {
     expect(tasks.length).toBe(1); //quantidade correta
     expect(tasks[0].title).toBe("any_title"); //dado correto
   });
+
+  test("Should list empty", async () => {
+    const sut = makeSut();
+
+    const tasks = await sut.list();
+    expect(tasks).toBeTruthy();
+    expect(tasks.length).toBe(0);
+  });
 });
