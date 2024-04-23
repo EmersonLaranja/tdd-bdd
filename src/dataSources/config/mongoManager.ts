@@ -25,4 +25,13 @@ export class MongoManager {
     if (!this.client) throw new Error("MongoClient is not connected");
     return this.client?.db().collection(name);
   }
+
+  public static map(data: any): any {
+    const { _id, ...rest } = data;
+    return { ...rest, id: _id.toHexString() };
+  }
+
+  public static mapCollection(collection: any[]): any[] {
+    return collection.map((c) => MongoManager.map(c));
+  }
 }

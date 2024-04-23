@@ -22,13 +22,7 @@ export class TaskMongoRepository
     const taskById = await taskCollection.findOne({ _id: insertedId });
     if (!taskById) throw new Error("Task not found");
 
-    const task: Task = {
-      id: taskById._id.toHexString(),
-      title: taskById.title,
-      description: taskById.description,
-      date: taskById.date,
-    };
-    return task;
+    return MongoManager.map(taskById);
   }
 
   async delete(taskData: DeleteTaskModel): Promise<void | Error> {
@@ -46,12 +40,6 @@ export class TaskMongoRepository
   async list(): Promise<Task[]> {
     const taskCollection = MongoManager.getInstance().getCollection("tasks");
     const tasks = await taskCollection.find().toArray();
-    const tasksFormatted = tasks.map((task) => ({
-      id: task._id.toHexString(),
-      title: task.title,
-      description: task.description,
-      date: task.date,
-    }));
-    return tasksFormatted;
+    return MongoManager.mapCollection(tasks);
   }
 }
