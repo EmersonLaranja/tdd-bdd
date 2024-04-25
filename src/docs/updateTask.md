@@ -8,14 +8,14 @@
 
 **DbUpdateTask.**
 
-[] Deve chamar UpdateTaskRepository com os valores corretos
-[] Deve lançar exceção se UpdateTaskRepository lançar exceção
+[X] Deve chamar UpdateTaskRepository com os valores corretos
+[X] Deve lançar exceção se UpdateTaskRepository lançar exceção
 
 **TaskMongoRepository**
 
-[] Deve atualizar tarefa com sucesso
-[] Deve retornar InvalidParamError se o ID da tarefa for inválido
-[] Deve retornar NotFoundError se nenhuma tarefa for encontrada para atualização
+[X] Deve atualizar tarefa com sucesso
+[X] Deve retornar InvalidParamError se o ID da tarefa for inválido
+[X] Deve retornar NotFoundError se nenhuma tarefa for encontrada para atualização
 
 **TaskRoutes**
 [] Deve retornar 204 ao chamar a rota para atualizar a tarefa

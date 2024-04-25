@@ -12,9 +12,15 @@ import {
   NotFoundError,
 } from "../../../adapters/presentations/api/errors";
 import { ListTasksRepository } from "../../../usecases/repository/listTasksRepository";
+import { UpdateTaskRepository } from "../../../usecases/repository/updateTaskRepository";
+import { UpdateTaskModel } from "../../../usecases/updateTask";
 
 export class TaskMongoRepository
-  implements AddTaskRepository, DeleteTaskRepository, ListTasksRepository
+  implements
+    AddTaskRepository,
+    DeleteTaskRepository,
+    ListTasksRepository,
+    UpdateTaskRepository
 {
   async add(taskData: AddTaskModel): Promise<Task> {
     const taskCollection = MongoManager.getInstance().getCollection("tasks");
@@ -41,5 +47,33 @@ export class TaskMongoRepository
     const taskCollection = MongoManager.getInstance().getCollection("tasks");
     const tasks = await taskCollection.find().toArray();
     return MongoManager.mapCollection(tasks);
+  }
+
+  async update(taskData: UpdateTaskModel): Promise<void | Error> {
+    const taskCollection = MongoManager.getInstance().getCollection("tasks");
+
+    if (!ObjectId.isValid(taskData.id)) {
+      return new InvalidParamError(taskData.id);
+    }
+
+    const updateFields: any = {};
+    if (taskData.title !== undefined) {
+      updateFields.title = taskData.title;
+    }
+    if (taskData.description !== undefined) {
+      updateFields.description = taskData.description;
+    }
+    if (taskData.date !== undefined) {
+      updateFields.date = taskData.date;
+    }
+
+    const { modifiedCount } = await taskCollection.updateOne(
+      { _id: new ObjectId(taskData.id) },
+      { $set: updateFields }
+    );
+
+    if (modifiedCount === 0) {
+      return new NotFoundError("task");
+    }
   }
 }
