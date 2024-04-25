@@ -18,4 +18,4 @@
 [X] Deve retornar NotFoundError se nenhuma tarefa for encontrada para atualização
 
 **TaskRoutes**
-[] Deve retornar 204 ao chamar a rota para atualizar a tarefa
+[X] Deve retornar 204 ao chamar a rota para atualizar a tarefa
